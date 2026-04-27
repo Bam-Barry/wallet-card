@@ -107,8 +107,10 @@ export default function WalletCard() {
                 zIndex: 5,
               }}
             >
+              {/* U-shape: left side → rounded bottom-left → bottom → rounded bottom-right → right side
+                  Traces the exact pocket edge with no inset, matching FRONT_POCKET_PATH corners */}
               <path
-                d="M 8 62 L 8 241 L 478 241 L 478 62"
+                d="M 0 56.29 L 0 241 A 8 8 0 0 1 8 249 L 478 249 A 8 8 0 0 0 486 241 L 486 56.29"
                 fill="none"
                 stroke="rgba(255,255,255,0.2)"
                 strokeWidth="1.5"
