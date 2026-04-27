@@ -11,11 +11,15 @@ const FRONT_POCKET_NAME = "Front Pocket Card";
 export default function WalletCard() {
   return (
     <div
+      data-name="Wallet Canvas"
       className="flex items-center justify-center min-h-screen"
       style={{ background: "#a8a8a8" }}
     >
       {/* Wallet stack: 542 × 412 */}
-      <div style={{ position: "relative", width: 542, height: 412 }}>
+      <div
+        data-name="Wallet Stack"
+        style={{ position: "relative", width: 542, height: 412 }}
+      >
 
         {/* Rectangle 34624560 — base: 542×412  radius:36  fill:#13141B */}
         <div
@@ -32,6 +36,7 @@ export default function WalletCard() {
 
         {/* Inner clipping area: 518×388  radius:24 */}
         <div
+          data-name="Inner Clip Frame"
           style={{
             position: "absolute",
             top: 12, left: 12, right: 12, bottom: 12,
@@ -53,6 +58,7 @@ export default function WalletCard() {
             }}
           >
             <div
+              data-name="Back Pocket Fill"
               style={{
                 width: "100%",
                 height: "100%",
@@ -74,9 +80,11 @@ export default function WalletCard() {
               left: 16, right: 16,
               height: 249,
               zIndex: 4,
+              isolation: "isolate",
             }}
           >
             <div
+              data-name="Front Pocket Fill"
               style={{
                 position: "absolute",
                 inset: 0,
@@ -93,21 +101,38 @@ export default function WalletCard() {
                 boxShadow: "inset 4px 4px 16px 0px rgba(255,255,255,0.07)",
               }}
             />
+            <div
+              data-name="Front Pocket Leather Texture"
+              style={{
+                position: "absolute",
+                inset: 0,
+                clipPath: ARCH_563,
+                backgroundImage: "url('/leather.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                mixBlendMode: "multiply",
+                opacity: 1,
+                pointerEvents: "none",
+                zIndex: 4,
+              }}
+            />
             {/* U-shape stitching using dashed borders (sides + bottom) */}
             <div
+              data-name="Front Pocket Stitching"
               style={{
                 position: "absolute",
                 left: 0,
                 right: 0,
                 top: 56.29,
                 bottom: 0,
-                borderLeft: "1.5px dashed rgba(255,255,255,0.08)",
-                borderRight: "1.5px dashed rgba(255,255,255,0.08)",
-                borderBottom: "1.5px dashed rgba(255,255,255,0.08)",
+                borderLeft: "2.5px dashed rgba(255,255,255,0.08)",
+                borderRight: "2.5px dashed rgba(255,255,255,0.08)",
+                borderBottom: "2.5px dashed rgba(255,255,255,0.08)",
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8,
                 pointerEvents: "none",
-                zIndex: 5,
+                zIndex: 6,
               }}
             />
           </div>
@@ -117,12 +142,13 @@ export default function WalletCard() {
             Must have zIndex higher than pocket (z:3) so the white
             inner glow appears over the pocket area too */}
         <div
+          data-name="Inner Overlay Frame"
           style={{
             position: "absolute",
             top: 12, left: 12, right: 12, bottom: 12,
             borderRadius: 24,
             border: "1px solid #000000",
-            boxShadow: "inset 0 0 2px 2px rgba(255,255,255,0.25)",
+            boxShadow: "inset 0 0 1px 1px rgba(255,255,255,0.25)",
             pointerEvents: "none",
             zIndex: 10,
           }}
