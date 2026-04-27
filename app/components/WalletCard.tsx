@@ -93,31 +93,23 @@ export default function WalletCard() {
                 boxShadow: "inset 4px 4px 16px 0px rgba(255,255,255,0.07)",
               }}
             />
-            {/* Sew — U-shape stitching: left side + bottom + right side
-                Starts just below the arch edges (y≈62), runs down both sides
-                and across the bottom, inset 8px from pocket edges */}
-            <svg
-              viewBox="0 0 486 249"
+            {/* U-shape stitching using dashed borders (sides + bottom) */}
+            <div
               style={{
                 position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
+                left: 0,
+                right: 0,
+                top: 56.29,
+                bottom: 0,
+                borderLeft: "1.5px dashed rgba(255,255,255,0.08)",
+                borderRight: "1.5px dashed rgba(255,255,255,0.08)",
+                borderBottom: "1.5px dashed rgba(255,255,255,0.08)",
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8,
                 pointerEvents: "none",
                 zIndex: 5,
               }}
-            >
-              {/* U-shape: left side → rounded bottom-left → bottom → rounded bottom-right → right side
-                  Traces the exact pocket edge with no inset, matching FRONT_POCKET_PATH corners */}
-              <path
-                d="M 0 56.29 L 0 241 A 8 8 0 0 1 8 249 L 478 249 A 8 8 0 0 0 486 241 L 486 56.29"
-                fill="none"
-                stroke="rgba(255,255,255,0.2)"
-                strokeWidth="1.5"
-                strokeDasharray="4 5"
-                strokeLinecap="round"
-              />
-            </svg>
+            />
           </div>
         </div>
 
