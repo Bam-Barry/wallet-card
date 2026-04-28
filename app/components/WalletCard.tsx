@@ -647,6 +647,8 @@ export default function WalletCard() {
   const tiltTargetRef = useRef({ x: 0, y: 0 });
   const tiltPhysicsRef = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
   const tiltRenderRef = useRef({ x: 0, y: 0 });
+  const pointerRafRef = useRef<number | null>(null);
+  const pointerPendingRef = useRef<PointerState>({ ...REST_POINTER });
 
   const activeCard = activeCardId
     ? CARD_CONFIG.find((card) => card.id === activeCardId) ?? null
@@ -712,6 +714,9 @@ export default function WalletCard() {
       clearPhaseJobs();
       if (tiltRafRef.current !== null) {
         window.cancelAnimationFrame(tiltRafRef.current);
+      }
+      if (pointerRafRef.current !== null) {
+        window.cancelAnimationFrame(pointerRafRef.current);
       }
     };
   }, []);
@@ -928,16 +933,26 @@ export default function WalletCard() {
       y: Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1),
     };
 
-    setPointer(nextPointer);
+    // Update tilt target immediately — it's a ref, no re-render cost.
+    if (tiltActive) {
+      const ndx = (nextPointer.x - 0.5) * 2;
+      const ndy = (nextPointer.y - 0.5) * 2;
+      tiltTargetRef.current = {
+        x: -ndy * MAX_TILT,
+        y: ndx * MAX_TILT,
+      };
+    }
 
-    if (!tiltActive) return;
-
-    const ndx = (nextPointer.x - 0.5) * 2;
-    const ndy = (nextPointer.y - 0.5) * 2;
-    tiltTargetRef.current = {
-      x: -ndy * MAX_TILT,
-      y: ndx * MAX_TILT,
-    };
+    // Throttle pointer state to one React re-render per animation frame.
+    // mousemove fires 2-3× per frame; batching here prevents those extra
+    // re-renders from competing with framer-motion's spring animation.
+    pointerPendingRef.current = nextPointer;
+    if (pointerRafRef.current === null) {
+      pointerRafRef.current = window.requestAnimationFrame(() => {
+        setPointer(pointerPendingRef.current);
+        pointerRafRef.current = null;
+      });
+    }
   }
 
   function handleCardClick(cardId: CardId) {
@@ -1119,6 +1134,11 @@ export default function WalletCard() {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => {
             setHovered(false);
+            if (pointerRafRef.current !== null) {
+              window.cancelAnimationFrame(pointerRafRef.current);
+              pointerRafRef.current = null;
+            }
+            pointerPendingRef.current = { ...REST_POINTER };
             setPointer({ ...REST_POINTER });
             tiltTargetRef.current = { x: 0, y: 0 };
           }}
