@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", "SF Pro Display", "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +23,331 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+.wallet-scene {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(180deg, #d4d5d8 0%, #bebfc4 100%);
+}
+
+.wallet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(22, 24, 31, 0.08);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wallet-backdrop.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  backdrop-filter: blur(16px);
+  background: rgba(12, 14, 20, 0.3);
+}
+
+.wallet-stage {
+  position: relative;
+  width: 542px;
+  height: 412px;
+  perspective: 1800px;
+  transform-style: preserve-3d;
+}
+
+.wallet-shell {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition:
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wallet-shell.is-muted {
+  filter: blur(14px) saturate(0.7) brightness(0.74);
+  opacity: 0.84;
+}
+
+.wallet-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 36px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 24%),
+    linear-gradient(150deg, #191b25 0%, #111218 58%, #0c0d13 100%);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.62),
+    0 12px 32px rgba(0, 0, 0, 0.42);
+}
+
+.wallet-inner-frame {
+  position: absolute;
+  inset: 12px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0) 30%),
+    rgba(0, 0, 0, 0.12);
+}
+
+.wallet-pocket-back {
+  position: absolute;
+  top: 123px;
+  left: 12px;
+  right: 12px;
+  height: 265px;
+  filter: drop-shadow(0 -4px 24px rgba(0, 0, 0, 0.56));
+  z-index: 14;
+}
+
+.wallet-pocket-back-fill {
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 24%),
+    #1a191a;
+  clip-path: path('M 0 60 Q 259 0 518 60 L 518 265 L 0 265 Z');
+}
+
+.wallet-pocket-front {
+  position: absolute;
+  top: 123px;
+  left: 28px;
+  right: 28px;
+  height: 249px;
+  z-index: 15;
+  isolation: isolate;
+}
+
+.wallet-pocket-front-fill {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(-60deg, rgba(15, 16, 21, 0.14) 0%, rgba(255, 255, 255, 0.073) 34%, rgba(255, 255, 255, 0.109) 76%, rgba(255, 255, 255, 0.028) 100%),
+    #0f1015;
+  clip-path: path('M 0 56.29 Q 243 0 486 56.29 L 486 241 A 8 8 0 0 1 478 249 L 8 249 A 8 8 0 0 1 0 241 Z');
+  box-shadow: inset 4px 4px 16px 0 rgba(255, 255, 255, 0.07);
+}
+
+.wallet-pocket-leather {
+  position: absolute;
+  inset: 0;
+  clip-path: path('M 0 56.29 Q 243 0 486 56.29 L 486 241 A 8 8 0 0 1 478 249 L 8 249 A 8 8 0 0 1 0 241 Z');
+  background-image: url("/leather.png");
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.wallet-pocket-stitching {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56.29px;
+  bottom: 0;
+  border-left: 2.5px dashed rgba(255, 255, 255, 0.08);
+  border-right: 2.5px dashed rgba(255, 255, 255, 0.08);
+  border-bottom: 2.5px dashed rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  pointer-events: none;
+}
+
+.wallet-inner-overlay {
+  position: absolute;
+  inset: 12px;
+  border-radius: 24px;
+  border: 1px solid #000;
+  box-shadow: inset 0 0 1px 1px rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.wallet-cards-layer {
+  position: absolute;
+  inset: 12px;
+  transform-style: preserve-3d;
+  z-index: 12;
+}
+
+.wallet-card {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 22px 24px;
+  cursor: pointer;
+  text-align: left;
+  transform-style: preserve-3d;
+  outline: none;
+  transition:
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 580ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 580ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 580ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wallet-card:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.54),
+    0 0 0 6px rgba(50, 34, 96, 0.18);
+}
+
+.wallet-card-edge-glow,
+.wallet-card-inner-highlight,
+.wallet-card-noise,
+.wallet-card-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wallet-card-edge-glow {
+  border-radius: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.wallet-card-inner-highlight {
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 18%),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 28%);
+  opacity: 0.85;
+}
+
+.wallet-card-noise {
+  border-radius: inherit;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.16) 0.7px, transparent 0.9px),
+    radial-gradient(rgba(0, 0, 0, 0.1) 0.7px, transparent 0.9px);
+  background-position: 0 0, 3px 4px;
+  background-size: 10px 10px, 12px 12px;
+  mix-blend-mode: soft-light;
+  opacity: 0.12;
+}
+
+.wallet-card-sheen {
+  border-radius: inherit;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0) 12%, rgba(255, 255, 255, 0.22) 46%, rgba(255, 255, 255, 0) 68%);
+  transform: translateX(-45%) skewX(-18deg);
+  opacity: 0.55;
+  transition:
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wallet-card:hover .wallet-card-sheen,
+.wallet-card.is-active .wallet-card-sheen {
+  transform: translateX(38%) skewX(-18deg);
+  opacity: 0.72;
+}
+
+.wallet-card-header,
+.wallet-card-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallet-card-label {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.wallet-card-footer {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+}
+
+.wallet-card-chip {
+  width: 56px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.wallet-card-meta {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 620px) {
+  .wallet-scene {
+    transform-origin: center;
+  }
+
+  .wallet-stage {
+    transform: scale(0.76);
+  }
+}
+
+@keyframes wallet-card-idle {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  26% {
+    transform: translate3d(0.15px, -0.7px, 1.5px) scale(1.002);
+  }
+
+  63% {
+    transform: translate3d(-0.1px, -1.15px, 0.8px) scale(0.999);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes wallet-ambient-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.78;
+  }
+
+  50% {
+    transform: translate3d(-0.6%, 0.4%, 0) scale(1.02);
+    opacity: 0.92;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.78;
+  }
 }
