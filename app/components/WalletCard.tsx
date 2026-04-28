@@ -73,6 +73,10 @@ type CardConfig = {
   sheen: string;
   highlight: string;
   border: string;
+  cardNumber: string;
+  cardHolder: string;
+  expiry: string;
+  network: "visa" | "mastercard";
 };
 
 type PointerState = { x: number; y: number };
@@ -111,6 +115,10 @@ const CARD_CONFIG: CardConfig[] = [
     sheen: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 52%)",
     highlight: "rgba(255,255,255,0.24)",
     border: "rgba(255,255,255,0.11)",
+    cardNumber: "4821 •••• •••• 3074",
+    cardHolder: "Alex Johnson",
+    expiry: "09/28",
+    network: "visa",
   },
   {
     id: "trading",
@@ -125,6 +133,10 @@ const CARD_CONFIG: CardConfig[] = [
     sheen: "linear-gradient(to left, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0) 60%)",
     highlight: "rgba(255,255,255,0.52)",
     border: "rgba(255,255,255,0.42)",
+    cardNumber: "5362 •••• •••• 8819",
+    cardHolder: "Alex Johnson",
+    expiry: "03/27",
+    network: "mastercard",
   },
 ];
 
@@ -256,11 +268,53 @@ function ContactlessIcon({ dark = false }: { dark?: boolean }) {
   const stroke = dark ? "rgba(40,28,70,0.45)" : "rgba(255,255,255,0.92)";
   const fill = dark ? "rgba(40,28,70,0.45)" : "rgba(255,255,255,0.92)";
   return (
-    <svg width="38" height="30" viewBox="0 0 38 30" fill="none">
+    <svg width="28" height="22" viewBox="0 0 38 30" fill="none">
       <circle cx="3.5" cy="15" r="2.5" fill={fill} />
       <path d="M10 8 Q17 15 10 22" stroke={stroke} strokeWidth="2.4" strokeLinecap="round" fill="none" />
       <path d="M18 4 Q29 15 18 26" stroke={stroke} strokeWidth="2.4" strokeLinecap="round" fill="none" />
       <path d="M26 1 Q38 15 26 29" stroke={stroke} strokeWidth="2.4" strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+function ChipIcon({ dark = false }: { dark?: boolean }) {
+  const base = dark ? "rgba(44,31,82,0.18)" : "rgba(255,255,255,0.22)";
+  const line = dark ? "rgba(44,31,82,0.28)" : "rgba(255,255,255,0.36)";
+  const body = dark ? "rgba(180,160,80,0.82)" : "rgba(210,185,100,0.9)";
+  return (
+    <svg width="42" height="32" viewBox="0 0 42 32" fill="none">
+      <rect x="1" y="1" width="40" height="30" rx="5" fill={body} stroke={line} strokeWidth="0.8" />
+      <rect x="14" y="1" width="14" height="30" fill={base} />
+      <rect x="1" y="10" width="40" height="12" fill={base} />
+      <rect x="14" y="10" width="14" height="12" rx="2" fill="none" stroke={line} strokeWidth="0.8" />
+      <line x1="21" y1="1" x2="21" y2="10" stroke={line} strokeWidth="0.7" />
+      <line x1="21" y1="22" x2="21" y2="31" stroke={line} strokeWidth="0.7" />
+      <line x1="1" y1="16" x2="14" y2="16" stroke={line} strokeWidth="0.7" />
+      <line x1="28" y1="16" x2="41" y2="16" stroke={line} strokeWidth="0.7" />
+    </svg>
+  );
+}
+
+function VisaLogo({ dark = false }: { dark?: boolean }) {
+  const color = dark ? "#1A1F71" : "#ffffff";
+  return (
+    <svg width="54" height="18" viewBox="0 0 54 18" fill="none">
+      <text x="0" y="15" fontFamily="Arial, sans-serif" fontWeight="700" fontSize="18" letterSpacing="-0.5" fill={color} opacity={dark ? 0.7 : 0.92}>
+        VISA
+      </text>
+    </svg>
+  );
+}
+
+function MastercardLogo({ dark = false }: { dark?: boolean }) {
+  const leftColor = dark ? "#EB001B" : "rgba(235,0,27,0.85)";
+  const rightColor = dark ? "#F79E1B" : "rgba(247,158,27,0.85)";
+  const overlapColor = dark ? "#FF5F00" : "rgba(255,95,0,0.85)";
+  return (
+    <svg width="44" height="28" viewBox="0 0 44 28" fill="none">
+      <circle cx="16" cy="14" r="13" fill={leftColor} />
+      <circle cx="28" cy="14" r="13" fill={rightColor} />
+      <path d="M22 4.3a13 13 0 0 1 0 19.4A13 13 0 0 1 22 4.3z" fill={overlapColor} />
     </svg>
   );
 }
@@ -448,29 +502,123 @@ const WalletSurfaceCard = memo(function WalletSurfaceCard({
           pointerEvents: "none",
         }}
       />
+      {/* Card content — debit card layout */}
       <div
         style={{
-          position: "relative",
+          position: "absolute",
+          inset: 0,
           zIndex: 2,
-          padding: "22px 24px",
+          padding: "20px 24px 18px",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "space-between",
-          alignItems: "flex-start",
           transform: `translate3d(${contentShiftX}px, ${contentShiftY}px, 8px)`,
           transition: "transform 140ms linear",
+          pointerEvents: "none",
         }}
       >
-        <span
-          style={{
-            fontSize: 22,
-            fontWeight: isTrading ? 600 : 700,
-            color: card.titleColor,
-            fontFamily: "system-ui, -apple-system, sans-serif",
-          }}
-        >
-          {card.label}
-        </span>
-        <ContactlessIcon dark={card.dark} />
+        {/* Row 1 — bank name + contactless */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 700,
+              color: card.titleColor,
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              opacity: 0.92,
+            }}
+          >
+            {card.label}
+          </span>
+          <ContactlessIcon dark={card.dark} />
+        </div>
+
+        {/* Row 2 — chip */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <ChipIcon dark={card.dark} />
+        </div>
+
+        {/* Row 3 — card number */}
+        <div>
+          <span
+            style={{
+              fontSize: 18,
+              fontWeight: 500,
+              color: card.titleColor,
+              fontFamily: "'Courier New', monospace",
+              letterSpacing: "0.18em",
+              opacity: 0.88,
+            }}
+          >
+            {card.cardNumber}
+          </span>
+        </div>
+
+        {/* Row 4 — holder, expiry, network */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 500,
+                color: card.titleColor,
+                fontFamily: "system-ui, -apple-system, sans-serif",
+                letterSpacing: "0.10em",
+                textTransform: "uppercase",
+                opacity: 0.55,
+              }}
+            >
+              Card Holder
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: card.titleColor,
+                fontFamily: "system-ui, -apple-system, sans-serif",
+                letterSpacing: "0.04em",
+                opacity: 0.9,
+              }}
+            >
+              {card.cardHolder}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span
+                style={{
+                  fontSize: 9,
+                  fontWeight: 500,
+                  color: card.titleColor,
+                  fontFamily: "system-ui, -apple-system, sans-serif",
+                  letterSpacing: "0.10em",
+                  textTransform: "uppercase",
+                  opacity: 0.55,
+                }}
+              >
+                Expires
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: card.titleColor,
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: "0.08em",
+                  opacity: 0.9,
+                }}
+              >
+                {card.expiry}
+              </span>
+            </div>
+            {card.network === "visa"
+              ? <VisaLogo dark={card.dark} />
+              : <MastercardLogo dark={card.dark} />
+            }
+          </div>
+        </div>
       </div>
     </motion.button>
   );
