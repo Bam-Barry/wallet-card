@@ -357,8 +357,8 @@ const WalletSurfaceCard = memo(function WalletSurfaceCard({
   elementRef?: (el: HTMLButtonElement | null) => void;
 }) {
   const isTrading = card.id === "trading";
-  const dx = pointer.x - 0.5;
-  const dy = pointer.y - 0.5;
+  const dx = pointerActive ? pointer.x - 0.5 : 0;
+  const dy = pointerActive ? pointer.y - 0.5 : 0;
   const contentShiftX = dx * 9;
   const contentShiftY = dy * 6;
   const noiseShiftX = dx * 5;
